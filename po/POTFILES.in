@@ -1,0 +1,13 @@
+src/app.vala
+src/window.vala
+src/station.vala
+src/library.vala
+src/directory.vala
+src/player.vala
+src/mpris.vala
+src/art.vala
+src/history.vala
+src/sleep_timer.vala
+src/alarm.vala
+src/alarm_service.vala
+widget/favorites_widget.vala

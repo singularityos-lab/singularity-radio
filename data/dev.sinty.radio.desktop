@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Radio
+Comment=Listen to internet radio stations
+Exec=singularity-radio
+Icon=dev.sinty.radio
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;Player;
+Keywords=radio;internet radio;stream;station;music;listen;
+StartupWMClass=dev.sinty.radio
+Actions=play-last;
+
+[Desktop Action play-last]
+Name=Play Last Station
+Exec=singularity-radio --play-last

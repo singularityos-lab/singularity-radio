@@ -1,0 +1,6 @@
+[
+  {"name": "Germany", "iso_3166_1": "DE", "stationcount": 5321},
+  {"name": "Italy", "iso_3166_1": "IT", "stationcount": 1804},
+  {"name": "", "iso_3166_1": "XX", "stationcount": 3},
+  {"name": "Nowhere", "iso_3166_1": null, "stationcount": 0}
+]

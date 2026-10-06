@@ -1,0 +1,8 @@
+[Widget]
+Id=radio.favorites
+ProviderId=dev.sinty.radio
+Name=Favorite Stations
+IconName=dev.sinty.radio
+Sizes=2x1;2x2;4x2
+Module=libsingularity-radio-widget.so
+ModuleSymbol=singularity_radio_widget_new

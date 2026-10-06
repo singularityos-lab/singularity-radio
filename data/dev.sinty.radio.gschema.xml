@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="dev.sinty.radio" path="/dev/sinty/radio/">
+    <key name="record-history" type="b">
+      <default>true</default>
+      <summary>Remember songs heard</summary>
+      <description>Keep a list of the song titles announced by the stations you listen to.</description>
+    </key>
+    <key name="web-search" type="s">
+      <choices>
+        <choice value="duckduckgo"/>
+        <choice value="google"/>
+        <choice value="bing"/>
+        <choice value="startpage"/>
+        <choice value="ecosia"/>
+      </choices>
+      <default>'duckduckgo'</default>
+      <summary>Web search</summary>
+      <description>The search engine used to look up a song from the history.</description>
+    </key>
+    <key name="sleep-custom-minutes" type="i">
+      <default>90</default>
+      <range min="1" max="720"/>
+      <summary>Custom sleep timer</summary>
+      <description>The last custom length of the sleep timer, in minutes.</description>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,8 @@
+[
+  {"ip": "2a01:4f8:c2c:8c9::1", "name": "de1.api.radio-browser.info"},
+  {"ip": "91.132.145.114", "name": "de1.api.radio-browser.info"},
+  {"ip": "89.58.16.19", "name": "NL1.api.radio-browser.info"},
+  {"ip": "1.2.3.4", "name": "evil.example.com"},
+  {"ip": "5.6.7.8"},
+  {"ip": "9.9.9.9", "name": "at1.api.radio-browser.info"}
+]

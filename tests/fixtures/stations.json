@@ -1,0 +1,77 @@
+[
+  {
+    "changeuuid": "4f2d5e8c-0601-11e8-ae97-52543be04c81",
+    "stationuuid": "96062a7b-0601-11e8-ae97-52543be04c81",
+    "serveruuid": null,
+    "name": "  Radio   Paradise\n Main Mix ",
+    "url": "http://stream.radioparadise.com/aac-320",
+    "url_resolved": "http://stream.radioparadise.com/aac-320",
+    "homepage": "https://radioparadise.com/",
+    "favicon": "https://radioparadise.com/apple-touch-icon.png",
+    "tags": "eclectic,rock,Rock,world,electronica",
+    "country": "The United States Of America",
+    "countrycode": "us",
+    "iso_3166_2": null,
+    "state": "California",
+    "language": "english",
+    "languagecodes": "en",
+    "votes": 32145,
+    "lastchangetime": "2024-01-01 10:00:00",
+    "codec": "AAC",
+    "bitrate": 320,
+    "hls": 0,
+    "lastcheckok": 1,
+    "clickcount": 1842,
+    "clicktrend": 12,
+    "ssl_error": 0,
+    "geo_lat": null,
+    "geo_long": null,
+    "has_extended_info": false
+  },
+  {
+    "stationuuid": "a1b2c3d4-0000-0000-0000-000000000002",
+    "name": "Radio Deejay",
+    "url": "http://example.org/deejay.pls",
+    "url_resolved": "",
+    "homepage": "",
+    "favicon": "",
+    "tags": "",
+    "country": "Italy",
+    "countrycode": "IT",
+    "state": "",
+    "language": "italian",
+    "codec": "UNKNOWN",
+    "bitrate": 0,
+    "hls": 1,
+    "lastcheckok": 0,
+    "votes": "12",
+    "clickcount": 7.0
+  },
+  {
+    "stationuuid": "96062a7b-0601-11e8-ae97-52543be04c81",
+    "name": "Duplicate Of Paradise",
+    "url": "http://stream.radioparadise.com/mp3-128"
+  },
+  {
+    "stationuuid": "broken-0000",
+    "name": "No Stream",
+    "url": "",
+    "url_resolved": ""
+  },
+  {
+    "stationuuid": "file-0000",
+    "name": "Local File",
+    "url": "file:///etc/passwd"
+  },
+  {
+    "stationuuid": "noname-0000",
+    "name": "",
+    "url": "https://icecast.example.net:8443/live",
+    "codec": "MP3",
+    "bitrate": 128,
+    "tags": null,
+    "country": null
+  },
+  "not an object",
+  42
+]

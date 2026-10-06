@@ -1,0 +1,25 @@
+{
+    "schema-id": "dev.sinty.radio",
+    "settings": [
+        {
+            "key": "record-history",
+            "label": "Remember Songs Heard",
+            "subtitle": "Keep the titles announced by the stations in History",
+            "type": "boolean",
+            "widget": "toggle"
+        },
+        {
+            "key": "web-search",
+            "label": "Search Songs With",
+            "type": "string",
+            "widget": "combo",
+            "options": [
+                { "id": "duckduckgo", "label": "DuckDuckGo" },
+                { "id": "google", "label": "Google" },
+                { "id": "bing", "label": "Bing" },
+                { "id": "startpage", "label": "Startpage" },
+                { "id": "ecosia", "label": "Ecosia" }
+            ]
+        }
+    ]
+}

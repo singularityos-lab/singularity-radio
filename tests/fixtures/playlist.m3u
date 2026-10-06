@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:-1,Example FM
+
+https://example.com/live.aac
+https://example.com/backup.aac
