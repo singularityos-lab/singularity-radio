@@ -752,6 +752,8 @@ namespace Singularity.Apps.Radio {
                 else play_station (s);
             });
             menu.add_item (_("Details"), "view-more-symbolic", () => open_detail (s));
+            string share_link = s.homepage != "" ? s.homepage : s.stream_url ();
+            if (share_link != "") menu.add_item (_("Share…"), "singularity-share-symbolic", () => Singularity.Share.uris ((Gtk.Window) get_root (), { share_link }, s.name));
             bool fav = library.is_favorite (s);
             menu.add_item (fav ? _("Remove from Library") : _("Add to Library"), fav ? "non-starred-symbolic" : "starred-symbolic", () => library.toggle_favorite (s));
             menu.add_item (_("Copy Stream Address"), "edit-copy-symbolic", () => get_clipboard ().set_text (s.stream_url ()));
