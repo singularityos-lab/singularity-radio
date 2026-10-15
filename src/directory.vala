@@ -40,6 +40,29 @@ namespace Singularity.Apps.Radio {
     }
 
     public class Directory : Object {
+        private static async Bytes read_bounded (Soup.Session session, Soup.Message message, int64 limit, int priority, Cancellable? cancellable) throws Error {
+            var stream = yield session.send_async (message, priority, cancellable);
+            if (message.response_headers.get_content_length () > limit) throw new IOError.MESSAGE_TOO_LARGE ("The response is too large");
+            var body = new ByteArray ();
+            var chunk = new uint8[65536];
+            ssize_t n;
+            while ((n = yield stream.read_async (chunk, priority, cancellable)) > 0) {
+                if (body.len + n > limit) {
+                    try {
+                        stream.close (null);
+                    } catch (Error e) {
+                    }
+                    throw new IOError.MESSAGE_TOO_LARGE ("The response is too large");
+                }
+                body.append (chunk[0:(int) n]);
+            }
+            try {
+                stream.close (null);
+            } catch (Error e) {
+            }
+            return ByteArray.free_to_bytes ((owned) body);
+        }
+
         public const string USER_AGENT = "SingularityRadio/0.1 (+https://github.com/singularityos-lab)";
         private const string[] FALLBACK = { "de1.api.radio-browser.info", "nl1.api.radio-browser.info", "at1.api.radio-browser.info", "de2.api.radio-browser.info", "fi1.api.radio-browser.info" };
 
@@ -173,9 +196,9 @@ namespace Singularity.Apps.Radio {
                 if (servers.length == 0) return;
                 var msg = new Soup.Message ("GET", "https://%s/json/url/%s".printf (servers[current % servers.length], Uri.escape_string (s.uuid, null, false)));
                 if (msg == null) return;
-                session.send_and_read_async.begin (msg, Priority.LOW, null, (o2, r2) => {
+                read_bounded.begin (session, msg, 64 * 1024, Priority.LOW, null, (o2, r2) => {
                     try {
-                        session.send_and_read_async.end (r2);
+                        read_bounded.end (r2);
                     } catch (Error e) {
                     }
                 });
@@ -186,7 +209,7 @@ namespace Singularity.Apps.Radio {
             if (!Parse.is_playlist_url (url)) return url;
             var msg = new Soup.Message ("GET", url);
             if (msg == null) throw new DirectoryError.BAD_ANSWER (_("This is not a valid address."));
-            var bytes = yield session.send_and_read_async (msg, Priority.DEFAULT, cancel);
+            var bytes = yield read_bounded (session, msg, 1024 * 1024, Priority.DEFAULT, cancel);
             if (msg.status_code != 200) throw new DirectoryError.UNAVAILABLE (_("The playlist could not be loaded (HTTP %u).").printf (msg.status_code));
             size_t n = size_t.min (bytes.get_size (), 256 * 1024);
             var sb = new StringBuilder.sized (n + 1);
