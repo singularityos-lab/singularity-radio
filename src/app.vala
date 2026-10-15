@@ -293,7 +293,7 @@ namespace Singularity.Apps.Radio {
         }
 
         private void quit_all () {
-            foreach (var w in get_windows ()) w.close ();
+            foreach (var w in get_windows ().copy ()) w.close ();
             drop_background ();
         }
 
