@@ -147,7 +147,7 @@ void test_urls () {
     assert (!Station.is_stream_url ("file:///tmp/x"));
     assert (!Station.is_stream_url ("javascript:alert(1)"));
     assert (Station.host_of ("http://radio.example.com:8000/live") == "radio.example.com");
-    assert (Station.clean_text ("\ta\n\n b\x07c ") == "a bc");
+    assert (Station.clean_text ("\ta\n\n b\007c ") == "a bc");
 }
 
 void test_library () {
