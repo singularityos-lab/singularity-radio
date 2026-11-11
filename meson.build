@@ -27,7 +27,7 @@ endif
 core_sources = files('src/station.vala', 'src/library.vala', 'src/directory.vala', 'src/history.vala', 'src/sleep_timer.vala', 'src/alarm.vala')
 
 executable('singularity-radio',
-  core_sources + files('src/player.vala', 'src/mpris.vala', 'src/art.vala', 'src/alarm_service.vala', 'src/window.vala', 'src/app.vala'),
+  core_sources + files('src/player.vala', 'src/mpris.vala', 'src/art.vala', 'src/alarm_service.vala', 'src/window.vala', 'src/agent_intents.vala', 'src/app.vala'),
   dependencies: [gtk_dep, gee_dep, soup_dep, json_dep, gst_dep, gst_audio, math_dep, libsingularity_dep],
   install: true
 )

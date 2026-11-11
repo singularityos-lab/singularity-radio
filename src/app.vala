@@ -51,6 +51,7 @@ namespace Singularity.Apps.Radio {
             history = new History ();
             sleep = new SleepTimer ();
             alarms = new AlarmService ();
+            RadioIntents.install (this);
             sleep.notify["level"].connect (() => player.fade = sleep.level);
             sleep.expired.connect (() => {
                 player.pause ();
@@ -283,7 +284,7 @@ namespace Singularity.Apps.Radio {
             play_station (list[next]);
         }
 
-        private void play_in_background (Station s) {
+        internal void play_in_background (Station s) {
             if (get_active_window () == null && get_windows ().length () == 0 && !background_held) {
                 background_held = true;
                 hold ();
