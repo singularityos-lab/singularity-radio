@@ -134,9 +134,6 @@ namespace Singularity.Apps.Radio {
 
             install_actions ();
             library.changed.connect (on_library_changed);
-            Singularity.FormFactor.get_default ().changed.connect ((previous) => {
-                if (view.kind == "library") render ();
-            });
             songs.changed.connect (() => {
                 update_actions ();
                 if (view != null && view.kind == "history") {
@@ -681,6 +678,7 @@ namespace Singularity.Apps.Radio {
         private ListBoxRow station_row (Station s, bool in_library) {
             var row = new ListBoxRow ();
             row.set_data<Station> ("station", s);
+            Singularity.Focus.set_key (row, s.key ());
             var box = new Box (Orientation.HORIZONTAL, 12);
             var art = new StationArt (44);
             art.valign = Align.CENTER;
@@ -771,55 +769,40 @@ namespace Singularity.Apps.Radio {
         }
 
         private void render_library () {
-            if (Singularity.FormFactor.current () == Singularity.FormFactorKind.TV) {
-                render_library_tv ();
-                return;
-            }
-            int n = library.favorites.size;
-            page.append (header (_("Library"), ngettext ("%d station", "%d stations", n).printf (n)));
-            page.append (station_list (library.favorites, true));
+            page.append (new AdaptiveBin ((kind) => kind == Singularity.FormFactorKind.TV ? library_shelves () : library_list ()));
             restore_scroll ();
         }
 
-        private void render_library_tv () {
+        private Widget library_list () {
+            var column = new Box (Orientation.VERTICAL, 16);
+            int n = library.favorites.size;
+            column.append (header (_("Library"), ngettext ("%d station", "%d stations", n).printf (n)));
+            column.append (station_list (library.favorites, true));
+            return column;
+        }
+
+        private Widget library_shelves () {
             var column = new Box (Orientation.VERTICAL, 28);
             column.margin_top = 16;
             column.margin_bottom = 24;
             if (library.recent.size > 0) column.append (station_shelf ("recent", _("Recently Played"), library.recent));
             column.append (station_shelf ("library", _("Your Stations"), library.favorites));
-            page.append (column);
+            return column;
         }
-
-        private string tv_focus_shelf = "";
-        private int tv_focus_index = -1;
 
         private MediaShelf station_shelf (string id, string title, Gee.List<Station> stations) {
             var shelf = new MediaShelf (title, 168);
             var items = new Gee.ArrayList<Station> ();
             items.add_all (stations);
-            int n = 0;
-            foreach (var s in items) {
-                var art = station_tile (shelf, s);
-                if (id == tv_focus_shelf && n == tv_focus_index) {
-                    Idle.add (() => {
-                        var tile = art.get_ancestor (typeof (Button));
-                        if (tile != null && tile.get_mapped ()) tile.grab_focus ();
-                        return Source.REMOVE;
-                    });
-                }
-                n++;
-            }
+            foreach (var s in items) station_tile (shelf, id, s);
             shelf.item_activated.connect ((i) => {
-                if (i >= items.size) return;
-                tv_focus_shelf = id;
-                tv_focus_index = (int) i;
-                open_detail (items[(int) i]);
+                if (i < items.size) open_detail (items[(int) i]);
             });
             return shelf;
         }
 
-        private MediaArt station_tile (MediaShelf shelf, Station s) {
-            var art = shelf.append_tile ("dev.sinty.radio", s.name, s.subtitle ());
+        private MediaArt station_tile (MediaShelf shelf, string id, Station s) {
+            var art = shelf.append_tile ("dev.sinty.radio", s.name, s.subtitle (), s.key ());
             show_favicon (art, s);
             return art;
         }
@@ -1079,7 +1062,7 @@ namespace Singularity.Apps.Radio {
             name.add_css_class ("radio-detail-name");
             name.xalign = 0;
             name.wrap = true;
-            name.selectable = Singularity.FormFactor.current () != Singularity.FormFactorKind.TV;
+            name.selectable = true;
             info.append (name);
             string loc = s.location ();
             string sub = s.custom ? _("Custom station") : loc;
@@ -1122,13 +1105,8 @@ namespace Singularity.Apps.Radio {
                 bool on = player.station != null && player.station.key () == s.key () && player.is_active ();
                 play.label = on ? _("Pause") : _("Play");
             });
+            Singularity.Focus.set_primary (play);
             actions.append (play);
-            if (Singularity.FormFactor.current () == Singularity.FormFactorKind.TV) {
-                Idle.add (() => {
-                    if (play.get_mapped ()) play.grab_focus ();
-                    return Source.REMOVE;
-                });
-            }
             bool fav = library.is_favorite (s);
             var lib = new Button.with_label (fav ? _("Remove from Library") : _("Add to Library"));
             lib.add_css_class ("pill");
