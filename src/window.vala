@@ -134,6 +134,9 @@ namespace Singularity.Apps.Radio {
 
             install_actions ();
             library.changed.connect (on_library_changed);
+            Singularity.FormFactor.get_default ().changed.connect ((previous) => {
+                if (view.kind == "library") render ();
+            });
             songs.changed.connect (() => {
                 update_actions ();
                 if (view != null && view.kind == "history") {
@@ -768,10 +771,71 @@ namespace Singularity.Apps.Radio {
         }
 
         private void render_library () {
+            if (Singularity.FormFactor.current () == Singularity.FormFactorKind.TV) {
+                render_library_tv ();
+                return;
+            }
             int n = library.favorites.size;
             page.append (header (_("Library"), ngettext ("%d station", "%d stations", n).printf (n)));
             page.append (station_list (library.favorites, true));
             restore_scroll ();
+        }
+
+        private void render_library_tv () {
+            var column = new Box (Orientation.VERTICAL, 28);
+            column.margin_top = 16;
+            column.margin_bottom = 24;
+            if (library.recent.size > 0) column.append (station_shelf ("recent", _("Recently Played"), library.recent));
+            column.append (station_shelf ("library", _("Your Stations"), library.favorites));
+            page.append (column);
+        }
+
+        private string tv_focus_shelf = "";
+        private int tv_focus_index = -1;
+
+        private MediaShelf station_shelf (string id, string title, Gee.List<Station> stations) {
+            var shelf = new MediaShelf (title, 168);
+            var items = new Gee.ArrayList<Station> ();
+            items.add_all (stations);
+            int n = 0;
+            foreach (var s in items) {
+                var art = station_tile (shelf, s);
+                if (id == tv_focus_shelf && n == tv_focus_index) {
+                    Idle.add (() => {
+                        var tile = art.get_ancestor (typeof (Button));
+                        if (tile != null && tile.get_mapped ()) tile.grab_focus ();
+                        return Source.REMOVE;
+                    });
+                }
+                n++;
+            }
+            shelf.item_activated.connect ((i) => {
+                if (i >= items.size) return;
+                tv_focus_shelf = id;
+                tv_focus_index = (int) i;
+                open_detail (items[(int) i]);
+            });
+            return shelf;
+        }
+
+        private MediaArt station_tile (MediaShelf shelf, Station s) {
+            var art = shelf.append_tile ("dev.sinty.radio", s.name, s.subtitle ());
+            show_favicon (art, s);
+            return art;
+        }
+
+        private void show_favicon (MediaArt art, Station s) {
+            string url = s.favicon.strip ();
+            if (url == "") return;
+            var cached = favicons.peek (url);
+            if (cached != null) {
+                art.paintable = cached;
+                return;
+            }
+            favicons.load.begin (url, (o, res) => {
+                var t = favicons.load.end (res);
+                if (t != null) art.paintable = t;
+            });
         }
 
         private void render_recent () {
@@ -1015,7 +1079,7 @@ namespace Singularity.Apps.Radio {
             name.add_css_class ("radio-detail-name");
             name.xalign = 0;
             name.wrap = true;
-            name.selectable = true;
+            name.selectable = Singularity.FormFactor.current () != Singularity.FormFactorKind.TV;
             info.append (name);
             string loc = s.location ();
             string sub = s.custom ? _("Custom station") : loc;
@@ -1059,6 +1123,12 @@ namespace Singularity.Apps.Radio {
                 play.label = on ? _("Pause") : _("Play");
             });
             actions.append (play);
+            if (Singularity.FormFactor.current () == Singularity.FormFactorKind.TV) {
+                Idle.add (() => {
+                    if (play.get_mapped ()) play.grab_focus ();
+                    return Source.REMOVE;
+                });
+            }
             bool fav = library.is_favorite (s);
             var lib = new Button.with_label (fav ? _("Remove from Library") : _("Add to Library"));
             lib.add_css_class ("pill");
