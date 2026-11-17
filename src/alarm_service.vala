@@ -75,8 +75,17 @@ namespace Singularity.Apps.Radio {
             changed ();
         }
 
+        private static string? clock_executable () {
+            var info = new DesktopAppInfo ("dev.sinty.clock.desktop");
+            if (info != null) {
+                string? exe = info.get_executable ();
+                if (exe != null && Path.is_absolute (exe) && FileUtils.test (exe, FileTest.IS_EXECUTABLE)) return exe;
+            }
+            return Environment.find_program_in_path ("singularity-clock");
+        }
+
         public bool wake_clock () {
-            string? program = Environment.find_program_in_path ("singularity-clock");
+            string? program = clock_executable ();
             if (program == null) {
                 error = _("Clock is not installed, so the alarm cannot ring.");
                 return false;
